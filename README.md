@@ -6,8 +6,8 @@ Basic NodeJS app that uses ExpressJS to expose REST endpoints to retrieve, save 
 
 ## To start
 
-> npm start -> start the application
-> npm run dev -> run application in dev mode, i.e. with nodemon
+> - npm start -> start the application
+> - npm run dev -> run application in dev mode, i.e. with nodemon
 
 ## MongoDB
 
