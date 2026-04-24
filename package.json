@@ -4,15 +4,12 @@
   "description": "",
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
-  "main": "index.js",
+  "type": "module",
+  "main": "index.mjs",
   "scripts": {
     "test": "jest",
     "start": "node index.mjs",
-    "dev": "nodemon index.mjs",
-    "build:clean": "rm -rf ./dist/*; rm ./dist/*; mkdir ./dist/logs;",
-    "build:config": "cp ./package.json ./dist",
-    "build": "npm run build:clean && npm run build:config && tsc --skipLibCheck;"
+    "dev": "nodemon index.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",
