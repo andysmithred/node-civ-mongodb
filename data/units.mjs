@@ -5,6 +5,13 @@ import db from '../db/conn.mjs';
 
 const router = express.Router();
 
+// status
+
+router.get('/status', (req, res) => {
+    res.status(200).json({"status": "ok"});
+})
+
+
 // GET all units
 router.get('/', async (req, res) => {
     console.log('Fetching all units from database');
@@ -12,7 +19,7 @@ router.get('/', async (req, res) => {
     const unitsCollection = db.collection('units'); 
     const units = await unitsCollection.find({}).toArray();
 
-    res.json(units).status(200);
+    res.status(200).json(units);
 });
 
 // GET a single unit
@@ -23,8 +30,8 @@ router.get("/:id", async (req, res) => {
     let query = {_id: new ObjectId(req.params.id)};
     let result = await collection.findOne(query);
 
-    if (!result) res.send("Not found").status(404);
-    else res.send(result).status(200);
+    if (!result) res.status(404).send("Not found");
+    else res.status(200).send(result);
 });
 
 // Add a new unit to the collection
@@ -32,21 +39,29 @@ router.post("/", async (req, res) => {
     console.log('Adding new unit to database');
 
     const { error } = validateUnit(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) {
+        console.error('Validation error:', error.details[0].message);
+        return res.status(400).send(error.details[0].message);
+    }
 
     let collection = await db.collection("units");
     let newDocument = req.body;
     let result = await collection.insertOne(newDocument);
 
-    res.send(result).status(204);
+    res.status(204).send(result);
 });
 
 // Update the unit
 router.patch("/:id", async (req, res) => {
     console.log(`Updating unit with ID: ${req.params.id}`);
 
+    delete req.body._id;
+
     const { error } = validateUnit(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) {
+        console.error('Validation error:', error.details[0].message);
+        return res.status(400).send(error.details[0].message);
+    }
 
     let collection = await db.collection("units");
     let query = {_id: new ObjectId(req.params.id)};
@@ -59,7 +74,7 @@ router.patch("/:id", async (req, res) => {
     };
     let result = await collection.updateOne(query, updates);
 
-    res.send(result).status(200);
+    res.status(200).send(result);
 });
 
 
@@ -79,7 +94,7 @@ router.patch("/:id/addAttribute", async (req, res) => {
     };
     let result = await collection.updateOne(query, updates);
 
-    res.send(result).status(200);   
+    res.status(200).send(result);   
 });
 
 
@@ -92,14 +107,17 @@ router.patch("/:id/addCivBonus", async (req, res) => {
     let query = {_id: new ObjectId(req.params.id)};
 
     let unit = await collection.findOne(query);
-    if (!unit) return res.status(404).send('The unit with the given ID was not found.');   
+    if (!unit) {
+        console.error('Unit not found with ID:', req.params.id);
+        return res.status(404).send('The unit with the given ID was not found.');   
+    }
 
     const updates = {
         $push: { civ_bonuses: newCivBonus } 
     };
     let result = await collection.updateOne(query, updates);
 
-    res.send(result).status(200);   
+    res.status(200).send(result);   
 });
 
 
@@ -115,7 +133,7 @@ router.delete("/:id", async (req, res) => {
 
     let result = await collection.deleteOne(query);
 
-    res.send(result).status(200);
+    res.status(200).send(result);
 });
 
 // clear attributes array
@@ -133,7 +151,7 @@ router.patch("/:id/clearAttributes", async (req, res) => {
     };
     let result = await collection.updateOne(query, updates);
 
-    res.send(result).status(200);   
+    res.status(200).send(result);   
 });
 
 // clear civ bonuses array
@@ -151,31 +169,45 @@ router.patch("/:id/clearCivBonuses", async (req, res) => {
     };
     let result = await collection.updateOne(query, updates);
 
-    res.send(result).status(200);   
+    res.status(200).send(result);   
 });
 
 // Validation function
 var validateUnit = unit => {
     const schema = joi.object({
         name: joi.string().min(3).required(),
+        icon: joi.string().min(3).required(),
         tier: joi.number().integer().min(1).max(3).required(),
         age: joi.string().required(),
-        production: joi.number().integer().min(1).required(),
-        gold: joi.number().integer().min(0).required(),
-        movement: joi.number().integer().min(1).required(),
-        strength: joi.number().integer().min(1).required(),
-        ranged: joi.number().integer().min(0).optional(),
-        range: joi.number().integer().min(0).optional(),
-        sight: joi.number().integer().min(1).required(),
-        bombard: joi.number().integer().min(0).optional(),
-        maintenance: joi.number().integer().min(0).required(),
-        unique: joi.boolean().required(),
-        unique_to: joi.string().optional().allow(null),
         type: joi.string().required(),
-        attributes: joi.array().items(joi.string()).required(),
-        civ_bonuses: joi.array(),
-        upgrades_to: joi.string().optional().allow(null),
-        replaces: joi.string().optional().allow(null)   
+        attributes: joi.array().items(joi.string()).optional(),
+        abilities: joi.array().items(joi.string()).optional(),
+        actions: joi.array().items(joi.string()).optional(),
+        unlocked: joi.string().optional().empty('').allow(null),
+        obsolete: joi.string().optional().empty('').allow(null),
+        cost: joi.object({
+            production: joi.number().integer().min(0).required(),
+            scalable: joi.boolean().required(),
+            gold: joi.number().integer().min(0).required(),
+            maintenance: joi.number().integer().min(0).required(),
+        }).required(),
+        stats: joi.object({ 
+            movement: joi.number().integer().min(1).required(),
+            strength: joi.number().integer().min(1).required(),
+            ranged: joi.number().integer().min(0).optional(),
+            range: joi.number().integer().min(0).optional(),
+            sight: joi.number().integer().min(1).optional(),
+            bombard: joi.number().integer().min(0).optional(),
+        }).required(),
+        upgrades: joi.string().optional().empty('').allow(null),
+        replaces: joi.string().optional().empty('').allow(null),
+        unique: joi.object({
+            is_unique: joi.boolean().required(),
+            civilization: joi.string().optional().empty('').allow(null),
+            replaces: joi.string().optional().empty('').allow(null),
+            bonuses: joi.array().items(joi.string()).optional(),
+        }).optional(),
+        notes: joi.array().items(joi.string()).optional(),
     });
     return schema.validate(unit);
 };

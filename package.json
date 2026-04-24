@@ -7,15 +7,22 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node index.mjs",
-    "dev": "nodemon index.mjs"
+    "dev": "nodemon index.mjs",
+    "build:clean": "rm -rf ./dist/*; rm ./dist/*; mkdir ./dist/logs;",
+    "build:config": "cp ./package.json ./dist",
+    "build": "npm run build:clean && npm run build:config && tsc --skipLibCheck;"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "joi": "^18.0.2",
     "mongodb": "^7.0.0",
     "nodemon": "^3.1.11"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0"
   }
 }
