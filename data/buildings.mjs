@@ -109,7 +109,7 @@ const validateBuilding = building => {
             effects: joi.array().items(joi.string()).required()
         }).optional(),
         type: joi.string().min(1).optional(),
-        pillage: joi.string().min(1).optional(),
+        pillage: joi.string().empty('').optional(),
         placement: joi.array().items(joi.string()).optional(),
         ageless: joi.boolean().required(),
         unique: joi.boolean().required(),

@@ -9,6 +9,30 @@ Basic NodeJS app that uses ExpressJS to expose REST endpoints to retrieve, save 
 - npm start -> start the application
 - npm run dev -> run application in dev mode, i.e. with nodemon
 
+## Docker
+
+### Build the image
+
+```bash
+docker build -t node-civ-mongodb .
+```
+
+### Run the container
+
+```bash
+docker run --rm -p 3000:3000 --env ATLAS_URI="your-mongodb-uri" node-civ-mongodb
+```
+
+### Run on a custom port
+
+```bash
+docker run --rm -p 8080:8080 --env PORT=8080 --env ATLAS_URI="your-mongodb-uri" node-civ-mongodb
+```
+
+Notes:
+- The app uses `ATLAS_URI` for MongoDB and defaults to `mongodb://localhost:27017` if not provided.
+- The app uses `PORT` and defaults to `3000` if not provided.
+
 ## MongoDB
 
 

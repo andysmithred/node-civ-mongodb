@@ -102,7 +102,8 @@ const validateWonder = wonder => {
         quote: joi.object({
             text: joi.string().min(1).required(),
             author: joi.string().min(1).required()
-        }).optional()
+        }).optional(),
+        tags: joi.array().items(joi.string()).optional()
     });
 
     return schema.validate(wonder);
