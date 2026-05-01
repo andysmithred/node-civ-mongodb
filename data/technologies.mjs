@@ -115,7 +115,8 @@ const validateTechnology = technology => {
             buildings: joi.array().items(joi.string()).optional(),
             wonders: joi.array().items(joi.string()).optional(),
             actions: joi.array().items(joi.string()).optional()
-        }).optional()
+        }).optional(),
+        tags: joi.array().items(joi.string()).optional()
     });
 
     return schema.validate(technology);
