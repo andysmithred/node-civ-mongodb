@@ -113,7 +113,8 @@ const validateBuilding = building => {
         placement: joi.array().items(joi.string()).optional(),
         ageless: joi.boolean().required(),
         unique: joi.boolean().required(),
-        unique_to: joi.string().empty('').optional()
+        unique_to: joi.string().empty('').optional(),
+        tags: joi.array().items(joi.string()).optional()
     });
 
     return schema.validate(building);
