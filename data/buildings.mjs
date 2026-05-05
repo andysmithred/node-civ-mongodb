@@ -93,7 +93,7 @@ const validateBuilding = building => {
     const schema = joi.object({
         name: joi.string().min(1).required(),
         icon: joi.string().min(1).required(),
-        unlocked: joi.string().min(1).optional(),
+        unlocked: joi.string().empty('').optional(),
         cost: joi.object({
             production: joi.number().min(0).required(),
             gold: joi.number().min(0).required()
@@ -108,7 +108,7 @@ const validateBuilding = building => {
             adjacency: joi.array().items(joi.string()).optional(),
             effects: joi.array().items(joi.string()).required()
         }).optional(),
-        type: joi.string().min(1).optional(),
+        type: joi.string().empty('').optional(),
         pillage: joi.string().empty('').optional(),
         placement: joi.array().items(joi.string()).optional(),
         ageless: joi.boolean().required(),
