@@ -88,7 +88,8 @@ const validatePolicy = policy => {
         requires: joi.string().min(1).optional(),
         effects: joi.array().items(joi.string()).required(),
         tradition: joi.boolean().required(),
-        civilization: joi.string().min(1).optional()
+        civilization: joi.string().min(1).optional(),
+        tags: joi.array().items(joi.string()).optional()
     });
 
     return schema.validate(policy);

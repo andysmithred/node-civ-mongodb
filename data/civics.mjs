@@ -113,6 +113,7 @@ var validateCivic = civic => {
             wonders: joi.array().items(joi.string()).optional(),
             units: joi.array().items(joi.string()).optional(),
             buildings: joi.array().items(joi.string()).optional(),
+            improvements: joi.array().items(joi.string()).optional(),
             projects: joi.array().items(joi.string()).optional(),
             policies: joi.array().items(joi.string()).optional(),
             endeavors: joi.array().items(joi.string()).optional(),
@@ -122,11 +123,13 @@ var validateCivic = civic => {
             wonders: joi.array().items(joi.string()).optional(),
             units: joi.array().items(joi.string()).optional(),
             buildings: joi.array().items(joi.string()).optional(),
+            improvements: joi.array().items(joi.string()).optional(),
             projects: joi.array().items(joi.string()).optional(),
             policies: joi.array().items(joi.string()).optional(),
             endeavors: joi.array().items(joi.string()).optional(),
             effects: joi.array().items(joi.string()).optional(),
-        }).optional()
+        }).optional(),
+        tags: joi.array().items(joi.string()).optional()
     });
     return schema.validate(civic);
 };
